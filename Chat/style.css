@@ -1,0 +1,48 @@
+#chatingbox{
+  border: 3px solid;
+  height: 70px;
+  width: 100%;
+  background-color: rgb(43, 35, 78);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+}
+#Entermessage{
+  margin-left: 22%; 
+  margin-top: 15px; 
+  width: 50%;
+  height: 35px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+}
+#sendbtn{
+    margin-top: -5px;
+    margin-left: 5px;
+}
+#chattingTerminal{
+    border:2px solid;
+    background-color: rgb(88, 60, 88);
+    margin-top: 20px;
+}
+#chattingTerminal message {
+    color: #ffffff;
+}
+nav{
+  border:2px solid;
+  background-color: rgb(93, 231, 59);
+}
+
+nav h2 {
+    text-align: center;
+}
+
+
+@media screen and (max-width: 480px) {
+    #chattingTerminal{
+        width: 90%;
+    }
+    #Entermessage{
+      margin-left: 17%;
+    }
+}
