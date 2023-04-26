@@ -34,7 +34,10 @@ async function signup (event) {
     if( Password.value === ConfirmPw.value ) {
         let res = await postUser(obj);
         console.log(res)
-        if(res.response.data.message==='user exists'){
+        if(res.data.message==='success'){
+            alert("Signup Successfull please Login to continue")
+        }
+        if(res.data.message==='user exists'){
             exists.style.display="block";
         }
     } else{
@@ -49,7 +52,54 @@ async function postUser(myobj){
     return response
     }
     catch(err){
-    return err;
+    return err.response;
     }
 }
 }
+
+if(page==="Login")  {
+  let Email = document.querySelector('#loginemail')
+  let Password = document.querySelector('#loginpassword')
+  let loginBtn = document.querySelector('#loginbtn')
+  let notFound = document.querySelector('#usernotfound')
+  let wrongPw = document.querySelector('#wrongpassword')
+  let form = document.querySelector('form');
+
+  form.onsubmit = login;
+
+  loginBtn.addEventListener('click',()=>{
+    notFound.style.display='none'
+    wrongPw.style.display='none'
+  })
+
+  async function login(event){
+    event.preventDefault();
+    let obj = {
+        Email : Email.value,
+        Password : Password.value
+    }
+    console.log(obj)
+    let res = await loginApi(obj)
+    console.log(res);
+    if(res.data.message==='usernotfound'){
+        notFound.style.display='block';
+    }
+    if(res.data.message==='incorrect password'){
+        wrongPw.style.display='block';
+    }
+    if(res.data.message==='login successfull'){
+        alert("Login successfull");
+    }
+  }
+
+  async function loginApi(obj){
+    try{
+        let response = await axios.post('http://localhost:8000/user/login',obj)
+        return response;
+    }
+    catch(err){
+        return err.response;
+    }
+  }
+
+} 
