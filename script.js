@@ -34,8 +34,12 @@ async function signup (event) {
     if( Password.value === ConfirmPw.value ) {
         let res = await postUser(obj);
         console.log(res)
+        if(res.data.message==='somthing went wrong'){
+            alert("Something Went Wrong Please try again later")
+        }
         if(res.data.message==='success'){
             alert("Signup Successfull please Login to continue")
+            location.replace('./login.html');
         }
         if(res.data.message==='user exists'){
             exists.style.display="block";
@@ -81,6 +85,9 @@ if(page==="Login")  {
     console.log(obj)
     let res = await loginApi(obj)
     console.log(res);
+    if(res.data.message==='something wrong'){
+        alert("Something Went Wrong Please try again later")
+    }
     if(res.data.message==='usernotfound'){
         notFound.style.display='block';
     }
@@ -89,6 +96,9 @@ if(page==="Login")  {
     }
     if(res.data.message==='login successfull'){
         alert("Login successfull");
+        let token = res.data.Token;
+        console.log(token);
+        localStorage.setItem('Token',token);
     }
   }
 
