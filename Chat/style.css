@@ -1,8 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400&display=swap');
+
+
+#body{
+    font-family: 'Roboto Slab', serif;
+    background-color: rgb(1, 9, 24);
+}
+
 #chatingbox{
-  border: 3px solid;
+  /* border: 3px solid; */
   height: 70px;
   width: 100%;
-  background-color: rgb(43, 35, 78);
+  background-color: rgb(63, 61, 63);
   position: fixed;
   bottom: 0;
   left: 0;
@@ -13,7 +21,7 @@
   margin-top: 15px; 
   width: 50%;
   height: 35px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(253, 253, 253);
   border-radius: 10px;
 }
 #sendbtn{
@@ -22,27 +30,49 @@
 }
 #chattingTerminal{
     border:2px solid;
-    background-color: rgb(88, 60, 88);
+    background-color: rgb(255, 255, 255);
     margin-top: 20px;
+    border-radius: 25px;
+    /* width: 700px; */
 }
 #chattingTerminal message {
-    color: #ffffff;
+    color: #000000;
 }
 nav{
   border:2px solid;
-  background-color: rgb(93, 231, 59);
+  background-color: rgb(23, 207, 240);
+  height: 60px;
+  position:sticky;
+  top : 0;
+  left: 0;
 }
 
 nav h2 {
+    margin-top: 10px;
     text-align: center;
+}
+
+#messages{
+  text-align: center;
 }
 
 
 @media screen and (max-width: 480px) {
     #chattingTerminal{
-        width: 90%;
+        width: 75%;
     }
     #Entermessage{
-      margin-left: 17%;
+      margin-left: 10%;
+      width: 220px;
     }
+    #messages{
+      text-align: center;
+    }
+    
+}
+
+@media screen and (min-width: 1024px) {
+  #chattingTerminal{
+    width: 700px;
+ }
 }

@@ -99,6 +99,7 @@ if(page==="Login")  {
         let token = res.data.Token;
         console.log(token);
         localStorage.setItem('Token',token);
+        location.replace('./Chat/chat.html')
     }
   }
 
