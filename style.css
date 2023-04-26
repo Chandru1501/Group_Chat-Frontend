@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400&display=swap');
+
+
+body{
+    font-family: 'Roboto Slab', serif;
+    background-color: rgb(20, 12, 7);
+}
+nav{
+    border: 2px solid;
+    background-color: rgb(15, 204, 252);
+}
+
+.form-control{
+  border-radius: 7px;
+  width: 200px;
+  margin-top: -20px;
+  margin-left: 44px;  
+  width: min-content; 
+  border-color: black; 
+  height: 35px;
+}
+
+#box{
+    border: 2px solid;
+    width: 350px;
+    height: 350px;
+    border-radius: 40px;
+    margin-top: 40px;
+    background-color: rgb(201, 201, 201);
+}
+
+#already{
+    margin-top: -20px;
+    text-align: center;
+}
+h2{
+    text-align: center;
+    margin-bottom: 30px;
+}
+button{
+    margin-left: 35%;
+    margin-top: 5px;
+}
+input{
+    margin-left: 20%;
+}
+#navTitle{
+    text-decoration:underline;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    margin-top: 13px;
+    font-size: 35px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+#mismatch{
+    font-size: 1.1rem;
+    margin-top: -20px;
+    text-align: center;
+    display: none;
+}
+#exist{
+    font-size: 1.1rem;
+    margin-top: -20px;
+    display: none;
+    text-align: center;
+}
+
+
+
+
+
+
+
+@media screen and (max-width: 480px) {
+    /* Adjust styles for small screens */
+    body {
+        font-family: 'Roboto Slab', serif;
+        font-size: 15px;
+    }
+    
+    /* Adjust layout for small screens */
+    .form-control{
+        width: 200px;
+        margin-left: 20px;
+    }
+    
+    #navTitle{
+        /* border: 2px solid; */
+        text-align: center;
+        margin-top: 13px;
+        /* background-color: aquamarine;  */
+    }
+    #box {
+      width: 70%;
+      padding: 10px;
+      margin-top: 10%;
+    }
+    button{
+        margin-left: 31%;
+    }
+    input::placeholder {
+        padding-left: 10px;
+      }
+  }
