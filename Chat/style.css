@@ -11,7 +11,7 @@
   height: 70px;
   width: 100%;
   background-color: rgb(63, 61, 63);
-  position: fixed;
+  position:fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
@@ -32,6 +32,7 @@
     border:2px solid;
     background-color: rgb(255, 255, 255);
     margin-top: 20px;
+    margin-bottom: 90px;
     border-radius: 25px;
     /* width: 700px; */
 }
@@ -52,8 +53,25 @@ nav h2 {
     text-align: center;
 }
 
+#logout{
+  float: right;
+  margin-top: -25px;
+  color: crimson;
+  margin-right: 19px;
+}
+
 #messages{
   text-align: center;
+}
+time{
+  font-size:small;
+}
+#date{
+ text-align: center;
+}
+p{
+  margin-left: -30px;
+  background-color: rgb(248, 223, 190);
 }
 
 

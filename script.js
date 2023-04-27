@@ -97,8 +97,10 @@ if(page==="Login")  {
     if(res.data.message==='login successfull'){
         alert("Login successfull");
         let token = res.data.Token;
+        let Username = res.data.Username;
         console.log(token);
         localStorage.setItem('Token',token);
+        localStorage.setItem('Username',Username);
         location.replace('./Chat/chat.html')
     }
   }
