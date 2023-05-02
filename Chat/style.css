@@ -3,52 +3,20 @@
 
 #body{
     font-family: 'Roboto Slab', serif;
-    background-color: rgb(1, 9, 24);
+    background-color: rgb(253, 253, 253);
 }
 
-#chatingbox{
-  /* border: 3px solid; */
-  height: 70px;
-  width: 100%;
-  background-color: rgb(63, 61, 63);
-  position:fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-}
-#Entermessage{
-  margin-left: 22%; 
-  margin-top: 15px; 
-  width: 50%;
-  height: 35px;
-  background-color: rgb(253, 253, 253);
-  border-radius: 10px;
-}
-#sendbtn{
-    margin-top: -5px;
-    margin-left: 5px;
-}
-#chattingTerminal{
-    border:2px solid;
-    background-color: rgb(255, 255, 255);
-    margin-top: 20px;
-    margin-bottom: 90px;
-    border-radius: 25px;
-    /* width: 700px; */
-}
-#chattingTerminal message {
-    color: #000000;
-}
-nav{
+#mainnav{
   border:2px solid;
   background-color: rgb(23, 207, 240);
   height: 60px;
-  position:sticky;
+  position:static;
+  width: 100%;
   top : 0;
   left: 0;
 }
 
-nav h2 {
+#mainnav h2 {
     margin-top: 10px;
     text-align: center;
 }
@@ -60,37 +28,420 @@ nav h2 {
   margin-right: 19px;
 }
 
-#messages{
-  text-align: center;
-}
-time{
-  font-size:small;
-}
-#date{
- text-align: center;
-}
-p{
-  margin-left: -30px;
-  background-color: rgb(248, 223, 190);
-}
 
 
 @media screen and (max-width: 480px) {
-    #chattingTerminal{
-        width: 75%;
-    }
+
+  #mainnav{
+    border:2px solid;
+    background-color: rgb(23, 207, 240);
+    height: 60px;
+    position:fixed;
+    width: 100%;
+    top : 0;
+    left: 0;
+  }
+
+  #newGroupform {
+    border: 2px solid;
+    width: 250px;
+    height: 200px;
+    position: fixed;
+    z-index: 1;
+    border-radius: 15px;
+    left: 50%;
+    top: 29%;
+    transform: translate(-50%);
+    background-color: rgb(236, 233, 230);
+    visibility:hidden;
+}
+
+  #newGroupform h2{
+    text-align: center;
+    margin-top: 5px;
+    margin-right: 19px
+  }
+  
+  #closeform{
+    float:right;
+    margin-right: 5px;
+    margin-top: -45px;
+    font-size: small;
+    border-radius: 50px;
+    background-color: crimson;
+  }
+
+  #groupnameinput{
+    border-radius: 10px;
+    margin-left: 11%;
+    margin-top: 5px;
+  }
+
+  #labelfor{
+    text-align: center;
+  }
+
+  #newGroupform select{
+    float: right;
+  }
+
+  #creategroupbtn{
+    margin-left: 28%;
+    margin-top: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color:yellowgreen;
+  }
+  
+  #groupsHead{
+    width: 8%;
+  }
     #Entermessage{
       margin-left: 10%;
       width: 220px;
+      display: none;
     }
     #messages{
       text-align: center;
     }
+    #newgroupbtn{
+      float: left;
+      margin-top: -5px;
+      margin-left: 1px;
+     }
+     
+     #listofgroups h2{
+       text-align: center;
+     }
     
+    #listofgroups{
+      border: 1px solid;
+      margin-left: 0px;
+      margin-top: 16%;
+      width: 100%;
+      background-color: #fdfafa;
+      height: 100%; /* Set the height of the container */
+      overflow: auto; /* Enable the scrollable feature */
+      position: fixed;
+      /* display: none; */
+    }
+    
+     #listofgroups #groupsHead{
+       border: 1px solid;
+       width:100%;
+       position:fixed;
+       background-color: rgb(21, 27, 56);
+       margin-top: -2px;
+     }
+     #listofgroups #groupsHead h2{
+       color:#f5f6f7;
+       font-size: 30px;
+     }
+     #groups{
+       margin-top: 40px;
+     }
+     #grouplist{
+      margin-top: 80px;
+     }
+     #listofgroups #grouplist h2 {
+      margin-top: 12px;
+       margin-left: -18%;
+       color: #000000;
+       background-color: #d4d4d4;
+       cursor: pointer;
+       font-size: x-large;
+     }
+     #refreshgroup{
+      float: right;
+      margin-right: 2px;
+      margin-top: -4px;
+      margin-left: 2px;
+      font-size:small;
+    }
+    
+    #nomessages{
+      text-align: center;
+    }
+    
+    #newgroupbtn{
+      float: left;
+      margin-top: -5px;
+      margin-left: 1px;
+      font-size: small;
+     }
+     #nomessages{
+      text-align: center;
+    }
+  
+    #chatingbox{
+      height: 70px;
+      background-color: rgb(44, 42, 44);
+      position:absolute;
+      bottom: 0;
+      right: 0;
+      width : 100%;
+      display: none;
+    }
+    #Entermessage{
+      margin-left: 2%; 
+      margin-top: 15px; 
+      width: 65%;
+      height: 35px;
+      background-color: rgb(253, 253, 253);
+      border-radius: 10px;
+      display: block;
+    }
+
+    #typing{
+      margin-left: 10%;
+    }
+   
+    #sendbtn{
+        margin-top: -35px;
+        margin-right: 35px;
+        float:right;
+        font-size: small;
+    }
+    
+    #messages{
+      text-align: center;
+      background-color: rgb(21, 27, 56);
+      position: fixed;
+      width: 100%;
+      height: 70px;
+      margin-top: -2px;
+      color:rgb(252, 251, 251);
+     }
+    .groupname{
+     text-align: center;
+   }
+     #chattingTerminal{
+         background-color: rgb(255, 255, 255);
+         height: 100%;
+         overflow: auto; 
+         position: fixed;
+         width: 100%;
+         margin-top: 60px;
+         display: none;
+     }
+     #chattingTerminal message {
+         color: #0e0c0c;
+     }
+   
+   #chattingTerminal ul {
+     margin-top: 80px;
+     margin-bottom: 38%;
+   }
+   time{
+     font-size:x-small;
+   }
+   #date{
+    text-align: center;
+   }
+   #messagelist p{
+     font-size: large;
+     margin-left: -30px;
+     margin-right: 10px;
+     background-color: rgb(235, 231, 227);
+   }
+   
+   #nomessages{
+    text-align: center;
+    margin-right: 35px;
+  }
+
+  #backtogroups{
+    margin-top: -10px;
+    float: left;
+    font-size: small;
+    height: 28px;
+    } 
+  }
+  
+  @media screen and (min-width: 490px) {
+    #welcome{
+      background-color:rgb(230, 226, 226);
+      font-size:40px;
+      margin-top: 25%;
+      margin-right: 35px;
+    }
+    
+  #nomessages{
+    text-align: center;
+  }
+
+  #chatingbox{
+    height: 70px;
+    background-color: rgb(44, 42, 44);
+    position:absolute;
+    bottom: 0;
+    right: 0;
+    width : 69.8%;
+    display: none;
+  }
+  #Entermessage{
+    margin-left: 22%; 
+    margin-top: 15px; 
+    width: 50%;
+    height: 35px;
+    background-color: rgb(253, 253, 253);
+    border-radius: 10px;
+  }
+ 
+  #sendbtn{
+      margin-top: -5px;
+      margin-left: 5px;
+  }
+  
+  #messages{
+    text-align: center;
+    background-color: rgb(21, 27, 56);
+    position: fixed;
+    width: 69.7%;
+    height: 70px;
+    color:rgb(252, 251, 251);
+   }
+ 
+   #chattingTerminal{
+       border:1px solid;
+       background-color: rgb(255, 255, 255);
+       height: 567px;
+       overflow: auto; 
+       position: fixed;
+       width: 952px;
+       margin-left: 30.2%;
+   }
+   #chattingTerminal message {
+       color: #0e0c0c;
+   }
+ 
+ #chattingTerminal ul {
+   margin-top: 90px;
+   margin-bottom: 90px;
+ }
+ 
+ time{
+   font-size:x-small;
+ }
+ #date{
+  text-align: center;
+ }
+ #messagelist p{
+   font-size: large;
+   margin-left: -30px;
+   margin-right: 20px;
+   background-color: rgb(235, 231, 227);
+ }
+ 
+ #nomessages{
+  text-align: center;
 }
 
-@media screen and (min-width: 1024px) {
-  #chattingTerminal{
-    width: 700px;
+#newGroupform{
+  border: 2px solid;
+  width: 258px;
+  height: 200px;
+  position: fixed;
+  z-index: 1;
+  border-radius: 15px;
+  left: 20%;
+  top: 25%;
+  transform: translate(-50%);
+  background-color: rgb(236, 233, 230);
+  visibility:hidden;
+}
+
+#newGroupform h2{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#closeform{
+  float:right;
+  margin-right: 5px;
+  margin-top: -45px;
+  font-size: small;
+  border-radius: 50px;
+  background-color: crimson;
+}
+
+#groupnameinput{
+  border-radius: 10px;
+  margin-left: 11%;
+  margin-top: 5px;
+}
+#labelfor{
+  text-align: center;
+}
+#newGroupform select{
+  float: right;
+}
+#creategroupbtn{
+  margin-left: 28%;
+  margin-top: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color:yellowgreen;
+}
+
+#refreshgroup{
+  float: right;
+  margin-right: 2px;
+  margin-top: -4px;
+  margin-left: 2px;
+}
+
+#nomessages{
+  text-align: center;
+}
+
+
+#newgroupbtn{
+  float: left;
+  margin-top: -5px;
+  margin-left: 1px;
  }
+ 
+ #listofgroups h2{
+   text-align: center;
+ }
+
+#listofgroups{
+  border: 1px solid;
+  margin-left: 0px;
+  width: 30%;
+  background-color: #fdfafa;
+  height: 565px; /* Set the height of the container */
+  overflow: auto; /* Enable the scrollable feature */
+  position: fixed;
+}
+   
+ #listofgroups #groupsHead{
+   border: 1px solid;
+   width:30%;
+   position:fixed;
+   background-color: rgb(21, 27, 56);
+ }
+
+ #listofgroups #groupsHead h2{
+   color:#f5f6f7;
+ }
+
+ #groups{
+   margin-top: 30px;
+ }
+
+ #grouplist{
+  margin-top: 90px;
+ }
+
+ #listofgroups #grouplist h2 {
+  margin-top: 12px;
+   margin-left: -18%;
+   color: #000000;
+   background-color: #f2f3f4;
+   cursor: pointer;
+   font-size: x-large;
+ }
+
 }

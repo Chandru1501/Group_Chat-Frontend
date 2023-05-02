@@ -98,6 +98,7 @@ if(page==="Login")  {
         alert("Login successfull");
         let token = res.data.Token;
         let Username = res.data.Username;
+        let Id = res.data.Id;
         console.log(token);
         localStorage.setItem('Token',token);
         localStorage.setItem('Username',Username);

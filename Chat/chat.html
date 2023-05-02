@@ -5,28 +5,60 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <title>Group Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+        <title>Group Chat</title>
 </head>
 <body id="body">
-    <nav>
+    <nav id="mainnav">
         <h2>GROUP CHAT</h2>
         <a id="logout" href="../login.html">Logout</a>
     </nav>
-    <div id="chattingTerminal" class="container">
-        <h2 id="messages">Messages</h2>
-        <ul>
 
-        </ul>
-    </div>
-    <form action="POST">
- <div id="chatingbox">
- <input type="text" id="Entermessage" name="userMessage" placeholder="   Type your message here..." required>
- <button id="sendbtn" class="btn btn-success">Send</button>
- </div>
-</form>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <div id="newGroupform">
+        <h2>Create Group</h2>
+        <button id="closeform" class="">X</button>
+        <div id="overlay"></div>
+    <form id="creategroupform" action="POST">
+        <input type="text" id="groupnameinput" name="Groupname" placeholder="Enter New Group name" required ><br>
+        <h6 id="labelfor" for="select">Select Group Members</h6>
+        <select id="totalusers" class="selectpicker" multiple data-live-search="true">
+          </select><br>
+          <button id="creategroupbtn">Create Group</button>
+    </form>
+</div>
+
+    <div id="listofgroups">
+            <nav id="groupsHead">
+                <h2>Grouplist</h2>
+                <button id="newgroupbtn" class="btn btn-success">New Group</button>
+                <button id="refreshgroup" class="btn btn-warning">Refresh</button>
+            </nav>
+           <div id="groups">
+          <ul id="grouplist" >
+          </ul>
+        </div>
+        </div>
+        <div id="chattingTerminal">
+            <nav  id="messages">
+                <h2 class="groupname">Group chat</h2>
+            </nav>    
+            <ul id="messagelist">
+            </ul>
+        </div>
+        <form action="POST" id="textform">
+            <div id="chatingbox">
+                <div id="typing">
+                    <input type="text" id="Entermessage" name="userMessage" placeholder=" Type your message here..." required>
+                    <button id="sendbtn" class="btn btn-success">Send</button>
+                </div>
+            </div>
+        </form>
+        <script src="script.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</body>
+            
+    </body>
 </html>
