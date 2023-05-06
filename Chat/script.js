@@ -63,10 +63,10 @@ async function createGroup(e) {
     e.preventDefault();
   let GroupName = groupName.value;
   
-  var selectedValues = [];
-  var selectElement = document.getElementById("totalusers");
+  let selectedValues = [];
+  let selectElement = document.getElementById("totalusers");
   for (var i = 0; i < selectElement.options.length; i++) {
-    var option = selectElement.options[i];
+    let option = selectElement.options[i];
     if (option.selected) {
       selectedValues.push(option.value || option.text);
     }
@@ -104,13 +104,15 @@ let NewgroupObj = {
     let localGroupdata = JSON.parse(localStorage.getItem('Allgroups'));
     if(localGroupdata===null || localGroupdata.length === 0){
          localGroupdata = [];
+         localGroupdata.push(Createdgroup);
+         localStorage.setItem('Allgroups',JSON.stringify(localGroupdata));   
     }
     else{
       localGroupdata.push(Createdgroup);
       localStorage.setItem('Allgroups',JSON.stringify(localGroupdata));   
     }
     console.log(Createdgroup.GroupName);
-    displayGroups([Createdgroup]);
+    displayGroups([Createdgroup]); // beacuse we are using foreach
   }
 }
 catch(err){
@@ -168,6 +170,8 @@ function displayGroups(Allgroups){
     h2.style.backgroundColor="#c8c8c8"
     h2.addEventListener('click',async()=>{
       try{
+        document.querySelector('#groupinfopage').style.display='none';
+        document.querySelector('#Entermessage').value = '';
         let messagelist = document.querySelector('#messagelist');
         messagelist.textContent='';
         document.querySelector('.groupname').textContent=groupname;
@@ -241,19 +245,24 @@ function displayGroups(Allgroups){
   })
 }
 
+var grouptitle;
+var groupId;
 
 // calling backend for getting newer messages
 setInterval(async()=>{
-  let grouptitle = document.querySelector('.groupname').textContent;
-  let groupId;
+  grouptitle = document.querySelector('.groupname').textContent;
+  let infobtn = document.querySelector('#groupinfobtn');
+  let deletegroupbtn = document.querySelector('#deletegroupbtn');
   if(grouptitle!='Group chat') {
-    let localGroupmessage =  localStorage.getItem(grouptitle);
-    // console.log(localGroupmessage);
-    if(localGroupmessage){
-        let localGroupmessages = JSON.parse(localGroupmessage);
-        console.log(localGroupmessages);
-    if(localGroupmessages.length!=0){
-     console.log("backend is called for "+grouptitle);
+    infobtn.style.display="block";
+    deletegroupbtn.style.display="block";
+   let localGroupmessage =  localStorage.getItem(grouptitle);
+   console.log(localGroupmessage);
+   if(localGroupmessage){
+       let localGroupmessages = JSON.parse(localGroupmessage);
+       console.log(localGroupmessages);
+   if(localGroupmessages.length!=0){
+    console.log("backend is called for "+grouptitle);
    let lastmessageId = localGroupmessages[localGroupmessages.length-1].Id;
    let groups = JSON.parse(localStorage.getItem('Allgroups'));
    groups.forEach(group=>{
@@ -300,8 +309,8 @@ setInterval(async()=>{
    if(firstmessageData.length>0){
     localStorage.setItem(grouptitle,JSON.stringify(firstmessageData));
     assembleData(firstmessageData);
-    }
-   }
+     }
+  }
   }
 },2000);
 
@@ -373,8 +382,8 @@ async function sendMessageToApi(message){
 
 catch(err){
   console.log(err);
+  alert(err.response.data.message);
 }
-
 }
 
 
@@ -451,3 +460,307 @@ async function ShowOnChatTerminal(obj){
   document.querySelector('#chattingTerminal').scrollTo(0, document.querySelector('#chattingTerminal').scrollHeight || document.documentElement.scrollHeight);
   // document.querySelector('#chattingTerminal').scrollTop = document.querySelector('#chattingTerminal').scrollHeight
 }
+
+// group info 
+
+let addmembersbtn = document.querySelector('#addmembersbtn');
+let groupinfoBtn = document.querySelector('#groupinfobtn');
+let groupinfoclosebtn = document.querySelector('#infopageclose');
+let infopage = document.querySelector('#groupinfopage');
+
+groupinfoBtn.addEventListener('click',()=>{
+  infopage.style.display='block';
+})
+
+groupinfoclosebtn.addEventListener('click',()=>{
+  infopage.style.display='none';
+  document.querySelector('#addmemberspage').style.display='none';
+  addmembersbtn.textContent='Add members'
+})
+
+// addmemberspage
+
+let memberspage = document.querySelector('#addmemberspage');
+
+addmembersbtn.addEventListener('click',()=>{
+  if(addmembersbtn.textContent==='Add members'){
+    memberspage.style.display='block';
+    addmembersbtn.textContent='Close';
+
+  }
+  else{
+    memberspage.style.display='none';
+    addmembersbtn.textContent='Add members';
+  }
+})
+
+let infoBtn = document.querySelector('#groupinfobtn');
+
+var totalusers;
+infoBtn.addEventListener('click',async()=>{
+  let token = localStorage.getItem('Token');
+  let response = await axios.get('http://localhost:8000/group/getallmembers',{ headers : {'authorization' : token} })
+  let Allusers = response.data.Allusers
+  totalusers = Allusers;
+  console.log(Allusers);
+  
+  addTomemberList(Allusers);
+  getAllgroupmembers();
+})
+
+let counting = 0;
+var allmembers;
+
+function addTomemberList(Allusers) {
+  console.log(Allusers);
+  if(counting>0){
+    return;
+  }
+  let selectElements = document.getElementById("selectmember");
+  console.log(selectElements);
+  Allusers.forEach(Element=>{
+    let option = document.createElement('option');
+    option.textContent = Element.Username
+    selectElements.appendChild(option);
+  })
+    $(selectElements).selectpicker('refresh');
+  counting++;
+}
+
+//getting all group members while clicking group info button
+
+var GroupMembers;
+let clickcount=0;
+async function getAllgroupmembers(){
+  groupmembersList.textContent='';
+  let token = localStorage.getItem('Token');
+  console.log(grouptitle);
+  let Allgroups = JSON.parse(localStorage.getItem("Allgroups"));
+  let thisgroupId;
+  Allgroups.forEach(group=>{
+    if(group.GroupName===grouptitle){
+       thisgroupId = group.id;
+    }
+  })
+
+  console.log("groupId "+thisgroupId);
+
+  let response = await axios.get(`http://localhost:8000/group/getgroupmembers/${thisgroupId}`,{headers : {'authorization' : token }});
+  console.log(response);
+  GroupMembers = response.data.groupmembers;
+  displaymembers(response.data.groupmembers);
+}
+
+let groupmembersList = document.querySelector('#memberslist');
+
+async function displaymembers(groupmembers){
+  try{
+    console.log(groupmembers);
+    let thisuser = String(localStorage.getItem('Username'));
+    let thisuserIsAdmin=false;
+  
+    groupmembers.forEach(member=>{
+      console.log(member);
+      if(member.isAdmin===true){
+         if(member.user.Username===thisuser){
+           thisuserIsAdmin=true;
+         }
+      }
+    })
+  
+    console.log(thisuser);
+    console.log(thisuserIsAdmin);
+  
+    groupmembers.forEach(member=>{
+      let username = member.user.Username;
+      let isAdmin = member.isAdmin;
+      if(username===thisuser){
+        username="YOU"
+      }
+      let tr = document.createElement('tr');
+      let td1 = document.createElement('td');
+      let td2 = document.createElement('td');
+      let td3 = document.createElement('td');
+      let h2 = document.createElement('h2');
+      h2.id = 'member';
+      if(isAdmin===true){
+        h2.textContent=`${username} (Admin) `
+      }
+      else{
+        h2.textContent=`${username} `
+      }
+      td1.appendChild(h2);
+      let button = document.createElement('button');
+        button.id='removeuser'
+        button.className='btn btn-danger'
+        button.textContent="remove";
+        if(username==='YOU'){
+          button.textContent='Exit'
+        }
+        td2.appendChild(button);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        
+        if(thisuserIsAdmin && !isAdmin){
+         var Markadmimbtn = document.createElement('button');
+          Markadmimbtn.id = 'markasadminbtn';
+          Markadmimbtn.className='btn btn-info'
+          Markadmimbtn.textContent='Make as Admin';
+          td3.appendChild(Markadmimbtn);
+          tr.appendChild(td3);
+        }
+        groupmembersList.appendChild(tr);
+        
+      button.addEventListener('click',async()=>{
+        let text = "Are you sure do you want to remove user ?";
+        if(button.textContent==='Exit'){
+          text = "Are you sure Do you want to Exit from this group ? "
+        }
+        if(confirm(text)) {
+            try{
+            console.log(member);
+          
+            var token = localStorage.getItem('Token');
+            let response = await axios.post('http://localhost:8000/group/removemember',member,{ headers : {'authorization' : token,"clarification" : button.textContent} });
+            console.log(response);
+            alert(response.data.message);
+            if(response.data.message==='User removed from this group successfully' || response.data.message==='Exited from this group successfully'){
+              groupmembersList.removeChild(tr);
+              infoBtn.click();
+            }
+          }
+          catch(err){
+            console.log(err);
+            alert(err.response.data.message);
+           }
+          }
+      })
+      if(thisuserIsAdmin && !isAdmin){
+      Markadmimbtn.addEventListener('click',async()=>{
+        try{
+        let token = localStorage.getItem('Token');
+
+        if(confirm('Are you sure ?')){
+          let response = await axios.post('http://localhost:8000/group/makeasadmin',member,{headers : {'authorization' : token}});
+          console.log(response); 
+          alert(response.data.message);
+          if(response.data.message==='Marked as admin successfully'){
+            infoBtn.click();
+          }
+        }
+      }
+      catch(err){
+        console.log(err);
+        alert(err.response.data.message);
+      }
+      })
+    }
+    })
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+
+// adding extra members in group
+
+let addmembersform = document.querySelector('#addmembersform');
+
+addmembersform.onsubmit = addextraMember
+
+async function addextraMember(e){
+  try{
+    e.preventDefault();
+    
+    let selectedValues = [];
+    let selectElement = document.getElementById("selectmember");
+    for (var i = 0; i < selectElement.options.length; i++) {
+      let option = selectElement.options[i];
+      if (option.selected) {
+        selectedValues.push(option.value || option.text);
+      }
+    }
+  
+    let selectedValuesaddedwithId = [];
+    console.log(selectedValues);
+    let groups = JSON.parse(localStorage.getItem('Allgroups'));
+    let thisgroupId;
+    groups.forEach(group=>{
+      if(grouptitle === group.GroupName){
+        thisgroupId = group.id;
+      }
+    })
+    totalusers.forEach(user=>{
+      selectedValues.forEach(username=>{
+         if(user.Username === username ){
+             let obj = {
+                userId : user.Id,
+                groupId : thisgroupId,
+                username : username
+             }
+             selectedValuesaddedwithId.push(obj);
+         }
+      })
+    })
+    console.log(selectedValuesaddedwithId);
+    console.log(GroupMembers)
+    let count=0;
+    GroupMembers.forEach(member=>{
+      selectedValuesaddedwithId.forEach(user=>{
+        if(member.user.Username===user.username){
+          count++;
+        }
+      })
+    })
+    if(count>0){
+      alert('One of the selected users is already Exists please select members who not a member of this group');
+    }
+    else{
+      let token = localStorage.getItem('Token');
+      let response = await axios.post('http://localhost:8000/group/addmembers',selectedValuesaddedwithId,{headers : {'authorization' : token }});
+      console.log(response);
+      alert(response.data.message);
+      if(response.data.message==='user successfully added'){
+       infoBtn.click();
+       document.querySelector('#addmembersbtn').click();
+      }
+    }
+  }
+  catch(err){
+    console.log(err);
+    alert('some error occured');
+    alert(err.response.data.message);
+  }
+}
+
+// delete group
+
+let deletegroupBtn = document.querySelector('#deletegroupbtn');
+
+deletegroupBtn.addEventListener('click',async()=>{
+  try{
+    console.log(grouptitle);
+    if(confirm(`Are you sure ? Do you want to delete ${grouptitle} group ? `)){
+      let Allgroups = JSON.parse(localStorage.getItem('Allgroups'));
+      let groupId;
+      Allgroups.forEach(group=>{
+       if(group.GroupName===grouptitle){
+          groupId = group.id
+        }
+      })
+      let token = localStorage.getItem('Token');
+      let response = await axios.get(`http://localhost:8000/group/deletegroup/${groupId}`,{headers : {'authorization' : token}});
+      console.log(response); 
+      alert(response.data.message);
+      if(response.data.message==='group deleted succesfully'){
+        document.querySelector('#refreshgroup').click();
+        location.reload();
+      }
+    }
+  }
+  catch(err){
+    console.log(err);
+    alert(err.response.data.message);
+  }
+})

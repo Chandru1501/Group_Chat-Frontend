@@ -18,13 +18,28 @@
     <div id="newGroupform">
         <h2>Create Group</h2>
         <button id="closeform" class="">X</button>
-        <div id="overlay"></div>
     <form id="creategroupform" action="POST">
         <input type="text" id="groupnameinput" name="Groupname" placeholder="Enter New Group name" required ><br>
         <h6 id="labelfor" for="select">Select Group Members</h6>
         <select id="totalusers" class="selectpicker" multiple data-live-search="true">
           </select><br>
           <button id="creategroupbtn">Create Group</button>
+    </form>
+</div>
+<div id="groupinfopage">
+   <nav id="groupinfohead">
+       <h3>Group Participants</h3>
+       <button class="btn btn-warning" id="addmembersbtn">Add members</button>
+       <button id="infopageclose">X</button>
+   </nav>
+   <table id="memberslist">
+   </table>
+</div>
+<div id="addmemberspage">
+    <form id="addmembersform" method="POST">
+        <select id="selectmember" class="selectpicker" multiple data-live-search="true">
+        </select><br>
+            <button class="btn btn-info" id="addmembersbutton">Add</button>
     </form>
 </div>
 
@@ -42,6 +57,8 @@
         <div id="chattingTerminal">
             <nav  id="messages">
                 <h2 class="groupname">Group chat</h2>
+                <button id="groupinfobtn" class="btn btn-info">Info</button>
+                <button id="deletegroupbtn" class="btn btn-danger">Delete Group</button>
             </nav>    
             <ul id="messagelist">
             </ul>
