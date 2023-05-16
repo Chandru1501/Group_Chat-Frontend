@@ -1,7 +1,13 @@
+import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+// import {  useEffect, useState } from 'react';
+
+const socket = io.connect('/');
+
 let messagesCount=0;
 
 var selectedGroup;
 
+// const socket = io('http://localhost:8000')
 
 window.addEventListener('DOMContentLoaded',ShowwelcomeMessage);
 
@@ -155,6 +161,16 @@ function listallGroups(){
   }
 }
 
+setInterval(async()=>{
+ grouptitle = document.querySelector('.groupname').textContent;
+let infobtn = document.querySelector('#groupinfobtn');
+let deletegroupbtn = document.querySelector('#deletegroupbtn');
+if(grouptitle!='Group chat') {
+ infobtn.style.display="block";
+ deletegroupbtn.style.display="block";
+}
+},500);
+
 let Grouplist = document.querySelector('#grouplist'); 
 
 // displaying groupslist and added event listener to get all messages with respect to when clicked
@@ -170,6 +186,9 @@ function displayGroups(Allgroups){
     h2.style.backgroundColor="#c8c8c8"
     h2.addEventListener('click',async()=>{
       try{
+        
+        socket.emit('group-opened',groupname);
+
         document.querySelector('#groupinfopage').style.display='none';
         document.querySelector('#Entermessage').value = '';
         let messagelist = document.querySelector('#messagelist');
@@ -189,8 +208,11 @@ function displayGroups(Allgroups){
      let localmessage = localStorage.getItem(groupname);
   if(localmessage){
     let localmessages = JSON.parse(localmessage);
-      console.log(localmessages);
+      console.log(localmessages); 
       assembleData(localmessages);
+      setTimeout(()=>{
+        getAndDisplayMessages();
+      },1000);
    }
    else{
     let messagesfromApi = await getmessagesApi(myGroupId,0);
@@ -212,6 +234,7 @@ function displayGroups(Allgroups){
       }
     })
     h2.addEventListener('click',()=>{
+      //getAndDisplayMessages();
       if (window.matchMedia("(max-width: 480px)").matches) {
             console.log("Screen size is below 480 pixels");
             let groupterminal = document.querySelector('#listofgroups');
@@ -248,71 +271,7 @@ function displayGroups(Allgroups){
 var grouptitle;
 var groupId;
 
-// calling backend for getting newer messages
-setInterval(async()=>{
-  grouptitle = document.querySelector('.groupname').textContent;
-  let infobtn = document.querySelector('#groupinfobtn');
-  let deletegroupbtn = document.querySelector('#deletegroupbtn');
-  if(grouptitle!='Group chat') {
-    infobtn.style.display="block";
-    deletegroupbtn.style.display="block";
-   let localGroupmessage =  localStorage.getItem(grouptitle);
-   console.log(localGroupmessage);
-   if(localGroupmessage){
-       let localGroupmessages = JSON.parse(localGroupmessage);
-       console.log(localGroupmessages);
-   if(localGroupmessages.length!=0){
-    console.log("backend is called for "+grouptitle);
-   let lastmessageId = localGroupmessages[localGroupmessages.length-1].Id;
-   let groups = JSON.parse(localStorage.getItem('Allgroups'));
-   groups.forEach(group=>{
-    if(group.GroupName===grouptitle){
-      groupId= group.id;
-    }
-   })
-
-   console.log("last message Id = "+lastmessageId);
-    console.log("group Id = "+groupId);
-   let messageData = await getmessagesApi(groupId,lastmessageId);
-   console.log(messageData);
-   if(messageData.length>0){
-    console.log('new message arrived')
-     let UpdatelocalData = JSON.parse(localStorage.getItem(grouptitle));
-      messageData.forEach(message=>{
-        UpdatelocalData.push(message);
-      })
-      
-     if(UpdatelocalData.length>30) {
-        while(UpdatelocalData.length>30){
-          UpdatelocalData.shift();
-        }
-     }
-
-      localStorage.setItem(grouptitle,JSON.stringify(UpdatelocalData));
-      assembleData(messageData);
-   }
-   else{
-     return;
-   }
-   }
-  }
-   else{
-    let groups = JSON.parse(localStorage.getItem('Allgroups'));
-    groups.forEach(group=>{
-     if(group.GroupName===grouptitle){
-       groupId= group.id;
-     }
-    })
-    console.log(groupId);
-   let firstmessageData = await getmessagesApi(groupId,0);
-   console.log(firstmessageData);
-   if(firstmessageData.length>0){
-    localStorage.setItem(grouptitle,JSON.stringify(firstmessageData));
-    assembleData(firstmessageData);
-     }
-  }
-  }
-},2000);
+// to check the current group
 
 
 // calling backend for getting messages with respect to group
@@ -348,14 +307,14 @@ document.querySelector('#textform').onsubmit = sendMessage;
 async function sendMessage(event){
   event.preventDefault();
   let usermessage = message.value;
-  console.log(usermessage);
+  //console.log(usermessage);
   let response = await sendMessageToApi(usermessage);
-  console.log(response);
+  //console.log(response);
 }
 
 async function sendMessageToApi(message){
   try{
-    console.log(message);
+    //console.log(message);
   let groupname = document.querySelector('.groupname').textContent;
   let token = localStorage.getItem('Token');
   let groupId;
@@ -370,28 +329,100 @@ async function sendMessageToApi(message){
     GroupId : groupId,
     Message : message
   }
-  console.log(obj);
-  let response = await axios.post('http://localhost:8000/messages/sendmessage',obj,{ headers : { "authorization" : token } });
-  document.querySelector('#Entermessage').value = "";
-  let localchat = localStorage.getItem(groupname);
-  if(!localchat){
-  document.querySelector('#nomessages').style.display='none';
-  }
-  return response;
+
+  socket.emit('send-message',obj,token,grouptitle);
+var count=0;
+
+   console.log(obj);
+  // let response = await axios.post('http://localhost:8000/messages/sendmessage',obj,{ headers : { "authorization" : token } });
+   document.querySelector('#Entermessage').value = "";
+   let localchat = localStorage.getItem(groupname);
+   if(!localchat){
+   document.querySelector('#nomessages').style.display='none';
+   }
+  // return response;
 }
 
 catch(err){
   console.log(err);
-  alert(err.response.data.message);
+  alert('error occured');
 }
 }
 
+socket.on("receive-message", async (msg) => {
+  console.log(msg)
+  getAndDisplayMessages();
+});
 
+socket.on('response-to-user',(msg)=>{
+  console.log(msg);
+  if(msg!='message sent'){
+    alert(msg);
+  }
+})
+
+async function getAndDisplayMessages() {
+  let localGroupmessage =  localStorage.getItem(grouptitle);
+  //console.log(localGroupmessage);
+  if(localGroupmessage){
+      let localGroupmessages = JSON.parse(localGroupmessage);
+      console.log(localGroupmessages);
+  if(localGroupmessages.length!=0){
+   console.log("backend is called for "+grouptitle);
+  let lastmessageId = localGroupmessages[localGroupmessages.length-1].Id;
+  let groups = JSON.parse(localStorage.getItem('Allgroups'));
+  groups.forEach(group=>{
+   if(group.GroupName===grouptitle){
+     groupId= group.id;
+   }
+  })
+
+  console.log("last message Id = "+lastmessageId);
+   console.log("group Id = "+groupId);
+  let messageData = await getmessagesApi(groupId,lastmessageId);
+  console.log(messageData);
+  if(messageData.length>0) {
+   console.log('new message arrived')
+    let UpdatelocalData = JSON.parse(localStorage.getItem(grouptitle));
+     messageData.forEach(message=>{
+       UpdatelocalData.push(message);
+     })
+     
+    if(UpdatelocalData.length>30) {
+       while(UpdatelocalData.length>30){
+         UpdatelocalData.shift();
+       }
+    }
+
+     localStorage.setItem(grouptitle,JSON.stringify(UpdatelocalData));
+     assembleData(messageData);
+  }
+  else{
+    return;
+   }
+  }
+ }
+  else{
+   let groups = JSON.parse(localStorage.getItem('Allgroups'));
+   groups.forEach(group=>{
+    if(group.GroupName===grouptitle){
+      groupId= group.id;
+    }
+   })
+   console.log(groupId);
+  let firstmessageData = await getmessagesApi(groupId,0);
+  console.log(firstmessageData);
+  if(firstmessageData.length>0){
+   localStorage.setItem(grouptitle,JSON.stringify(firstmessageData));
+   assembleData(firstmessageData);
+    }
+ }
+}
 
 async function assembleData(Groupmessages){
   try{
     Groupmessages.forEach(Element => {
-    let hour = Element.createdAt.substring(11,13);
+    let hour = Number(Element.createdAt.substring(11,13))+5;
     let AmorPm = "AM";
     if(hour>12){
       hour = hour-12
@@ -399,13 +430,13 @@ async function assembleData(Groupmessages){
     }
     let minutes = Element.createdAt.substring(14,16);
     
-    myobj = {
+    let myobj = {
       Message : Element.Message,
       Username : Element.user.Username,
       Date : Element.createdAt.substring(0,10).split("-").reverse().join('/'),
       Time : `${hour}:${minutes} ${AmorPm}`
     }
-      console.log(myobj);
+      //console.log(myobj);
       ShowOnChatTerminal(myobj);
    });
   }
