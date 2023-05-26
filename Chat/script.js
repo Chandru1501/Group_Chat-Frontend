@@ -1,5 +1,4 @@
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
-// import {  useEffect, useState } from 'react';
 
 const socket = io.connect('/');
 
@@ -160,6 +159,7 @@ function listallGroups(){
     getAllgroups();
   }
 }
+var grouptitle;
 
 setInterval(async()=>{
  grouptitle = document.querySelector('.groupname').textContent;
@@ -253,6 +253,10 @@ function displayGroups(Allgroups){
                   chatterminal.style.display='none';
                   groupterminal.style.display='block';
                   chatingbox.style.display='none';
+                  document.querySelector('#groupinfopage').style.display='none';
+                  document.querySelector('#addmemberspage').style.display='none';
+                  document.querySelector('#fileform').style.display='none';
+                  document.querySelector('#addmembersbtn').textContent='Add members'
                 })
                 backcount=1;
               }
@@ -429,15 +433,52 @@ async function assembleData(Groupmessages){
       AmorPm = "PM"
     }
     let minutes = Element.createdAt.substring(14,16);
-    
+    minutes = Number(minutes)+30;
+    if(minutes>60) {
+       minutes=Number(minutes)-60;
+       if(minutes==0){
+        minutes="00";
+       }
+       hour=Number(hour)+1;
+       if(hour>12){
+         hour=1;
+       }
+       
+    }
+
+    if(hour>=1 && hour<=9){
+      hour = `0${hour}`
+    }
+
+
     let myobj = {
       Message : Element.Message,
       Username : Element.user.Username,
       Date : Element.createdAt.substring(0,10).split("-").reverse().join('/'),
       Time : `${hour}:${minutes} ${AmorPm}`
     }
-      //console.log(myobj);
-      ShowOnChatTerminal(myobj);
+
+        let address = Element.Message.split('/');
+
+        if(address){
+          if(address[2]==='groupchat-userfiles.s3.amazonaws.com'){
+            let filetype = Element.Message.split('.')[4];
+          console.log(filetype);
+          if(filetype==='jpg' || filetype==='png' || filetype==='jpeg' || filetype==='gif'){
+              console.log("image file !!!");
+              showfilesOnchatingterminal(myobj,true,filetype);  // true : because it is image file
+          }
+          else{
+              showfilesOnchatingterminal(myobj,false,filetype);
+           }
+          }
+          else{
+            ShowOnChatTerminal(myobj);
+          }
+        }
+        else{
+          ShowOnChatTerminal(myobj);
+        }
    });
   }
   catch(err){
@@ -453,27 +494,21 @@ let MessageList = document.querySelector('#messagelist');
 
 async function ShowOnChatTerminal(obj){
    
-  let removedMsgId = {
-    Date : obj.Date,
-    Message : obj.Message,
-    Time : obj.Time,
-    Username : obj.Username
-  }
-   
   let p = document.createElement('p');
   let date = document.createElement('date');
   date.id = "date";
-  let br = document.createElement('br');
+  let br1 = document.createElement('br');
+  let br2 = document.createElement('br');
   let name = document.createElement('name');
   let message = document.createElement('message');
   let time = document.createElement('time');
   let hr = document.createElement('hr');
   
-  date.textContent = removedMsgId.Date;
+  date.textContent = obj.Date;
   p.appendChild(date);
-  p.appendChild(br);
-  name.textContent = `${removedMsgId.Username} : `;
-  if(localStorage.getItem('Username') === removedMsgId.Username ){
+  p.appendChild(br2);
+  name.textContent = `${obj.Username} : `;
+  if(localStorage.getItem('Username') === obj.Username ){
     name.textContent = 'YOU : '
     p.style.textAlign="end"
   }
@@ -481,10 +516,11 @@ async function ShowOnChatTerminal(obj){
     p.style.textAlign="start"
   }
   p.appendChild(name);
-  message.textContent = `${removedMsgId.Message} `;
+  message.textContent = `${obj.Message} `;
   p.appendChild(message);
   
-  time.textContent = removedMsgId.Time;
+  time.textContent = obj.Time;
+  p.appendChild(br1);
   p.appendChild(time);
   MessageList.appendChild(p);
 
@@ -514,6 +550,10 @@ groupinfoclosebtn.addEventListener('click',()=>{
 let memberspage = document.querySelector('#addmemberspage');
 
 addmembersbtn.addEventListener('click',()=>{
+  if(addmembersbtn.textContent==='Close'){
+    let selectElements = document.getElementById("selectmember");
+    $(selectElements).selectpicker('refresh');
+  }
   if(addmembersbtn.textContent==='Add members'){
     memberspage.style.display='block';
     addmembersbtn.textContent='Close';
@@ -787,6 +827,7 @@ deletegroupBtn.addEventListener('click',async()=>{
       if(response.data.message==='group deleted succesfully'){
         document.querySelector('#refreshgroup').click();
         location.reload();
+        localStorage.removeItem(grouptitle);
       }
     }
   }
@@ -795,3 +836,239 @@ deletegroupBtn.addEventListener('click',async()=>{
     alert(err.response.data.message);
   }
 })
+
+
+/// file sharing
+
+let clip = document.querySelector('#clip');
+let sendfileform = document.querySelector('#fileform');
+let sendfileBtn = document.querySelector('#sendfilebtn');
+let fileinput = document.querySelector('#fileinput');
+let pleasewait = document.querySelector('#pleasewait');
+
+sendfileform.onsubmit = uploadFile;
+
+let clipclickcount = false;
+
+clip.addEventListener('click',()=>{
+  if(clipclickcount===false){
+    sendfileform.style.display='block';
+    clipclickcount=true;
+  }
+  else if(clipclickcount===true){
+    sendfileform.style.display='none';
+    clipclickcount=false;
+  }
+})
+
+sendfileBtn.addEventListener('click',()=>{
+  pleasewait.style.display='block';
+})
+
+socket.on('receive-a-file',(file)=>{
+  console.log(file);
+  assembleData([file[0]]);
+})
+
+async function uploadFile(e){
+  try{
+    e.preventDefault();
+    let file = fileinput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    let token = localStorage.getItem('Token');
+    let groupId;
+    let Allgroups = JSON.parse(localStorage.getItem('Allgroups'));
+    Allgroups.forEach((group)=>{
+      if(group.GroupName===grouptitle){
+         groupId = group.id;
+      }
+    })
+    let response = await axios.post('http://localhost:8000/messages/sendfile',formData,{headers : {"authorization" : token , "groupId" : groupId }});
+    console.log(response);
+    if(response){
+      sendfileform.style.display='none';
+      fileinput.value='';
+      pleasewait.style.display='none';
+      console.log(response.data.file);
+      socket.emit('someone-sent-a-file',response.data.file,grouptitle);
+    }
+  }
+  catch(err){
+    console.log(err);
+    pleasewait.style.display='none';
+    alert('some error occured');
+  }
+}
+
+var Icons = {
+  person : "bi bi-person" ,
+  downloadIcon : "bi bi-download",
+  pdf : "bi bi-filetype-pdf" ,
+  csv : "bi bi-filetype-csv",
+  xlsx : "bi bi-filetype-xlsx" ,
+  txt :  "bi bi-filetype-txt",
+  wav : "bi bi-filetype-wav" ,
+  image : "bi bi-file-image" ,
+  zip :   "bi bi-file-zip-fill" ,
+  aac  : "bi bi-filetype-aac" ,
+  pptx : "bi bi-filetype-pptx" ,
+  docx : "bi bi-filetype-docx" ,
+  doc :  "bi bi-filetype-doc",
+  mov : "bi bi-filetype-mov" ,
+  mp4 :  "bi bi-filetype-mp4" ,
+  mp3 : "bi bi-filetype-mp3" ,
+  other :  "bi bi-files",
+};
+
+function giveIconclass(icon){
+  console.log(icon);
+  return Icons[icon];
+}
+
+async function showfilesOnchatingterminal(fileDetails,Isimage,filetype){
+  console.log(fileDetails);
+  let p = document.createElement('p');
+  let date = document.createElement('date');
+  date.id = "date";
+  let br1 = document.createElement('br');
+  let br2 = document.createElement('br');
+  let br3 = document.createElement('br');
+  let name = document.createElement('name');
+  let message = document.createElement('message');
+  let time = document.createElement('time');
+  let hr = document.createElement('hr');
+  
+  
+  if(Isimage){
+    let imgTag= document.createElement('img');
+    let Dwnbutton = document.createElement('button');
+    var Iconwithclass;
+    Dwnbutton.className = 'btn btn-warning'
+    Dwnbutton.id = "imagedownloadBtn";
+    Dwnbutton.textContent = 'Download';
+    Dwnbutton.style.fontSize = 'small';
+    imgTag.id = 'imageTag';
+    imgTag.src = fileDetails.Message;
+    imgTag.alt = "loading failed"
+    imgTag.setAttribute('width', '450');
+    imgTag.setAttribute('height', '350');
+    date.textContent =`${fileDetails.Date} : `;
+    p.appendChild(date);
+    if(localStorage.getItem('Username') === fileDetails.Username ){
+      name.textContent = 'YOU '
+      p.style.textAlign="end"
+    }
+    else{
+      p.style.textAlign="start"
+      name.textContent = ` ${fileDetails.Username} `;
+    }
+    p.appendChild(name);
+    p.appendChild(br1);
+    p.appendChild(imgTag);
+    p.appendChild(br2);
+    p.appendChild(Dwnbutton);
+    p.appendChild(br3);
+    time.textContent = fileDetails.Time;
+    p.appendChild(time);
+
+    Dwnbutton.addEventListener('click',()=>{
+      var a = document.querySelector('a');
+      a.href =fileDetails.Message;
+      a.click();
+    })
+  }
+
+  else{
+    console.log("none image file");
+    if(filetype==="pdf"){
+     Iconwithclass  = giveIconclass("pdf")
+    }
+    else if (filetype==="mp3"){
+      Iconwithclass  = giveIconclass("mp3")
+    }
+    else if (filetype==="xlsx"){
+      Iconwithclass  = giveIconclass("xlsx")
+    }
+    else if (filetype==="txt"){
+      Iconwithclass  = giveIconclass("txt")
+    }
+    else if (filetype==="wav"){
+      Iconwithclass  = giveIconclass("wav")
+    }
+    else if (filetype==="docx"){
+      Iconwithclass  = giveIconclass("docx")
+    }
+    else if (filetype==="doc"){
+      Iconwithclass  = giveIconclass("doc")
+    }
+    else if (filetype==="pptx"){
+      Iconwithclass  = giveIconclass("pptx")
+    }
+    else if (filetype==="aac"){
+      Iconwithclass  = giveIconclass("aac")
+    }
+    else if (filetype==="mov"){
+      Iconwithclass  = giveIconclass("mov")
+    }
+    else if (filetype==="zip"){
+      Iconwithclass  = giveIconclass("zip")
+    }
+    else if (filetype==="mp4"){
+      Iconwithclass  = giveIconclass("mp4")
+    }
+    else if (filetype==="csv"){
+      Iconwithclass  = giveIconclass("csv")
+    }
+    else{
+      "other"
+      Iconwithclass  = giveIconclass("other")
+    }
+    
+    console.log(Iconwithclass);
+    
+    date.textContent =`${fileDetails.Date} `;
+    p.appendChild(date);
+    if(localStorage.getItem('Username') === fileDetails.Username ){
+      name.textContent = ' : YOU '
+      p.style.textAlign="end"
+    }
+    else{
+      p.style.textAlign="start"
+      name.textContent = ` : ${fileDetails.Username} `;
+    }
+    p.appendChild(name);
+    p.appendChild(br1);
+
+    let i = document.createElement('i');
+    let filename = document.createElement('h4');
+    let Thisfilename = fileDetails.Message.split("--")[2];
+    console.log(Thisfilename);
+    i.className = Iconwithclass;
+    i.id='Icon';
+    p.appendChild(i);
+    filename.textContent = Thisfilename;
+    filename.id = 'filename';
+    filename.style.display='inline'
+    p.appendChild(filename);
+    let downloadIcon = document.createElement("i");
+    downloadIcon.className =  "bi bi-download";
+    downloadIcon.id = 'downloadIcon';
+    p.appendChild(downloadIcon);
+    p.appendChild(br2);
+    time.textContent = ` ${fileDetails.Time} `;
+    p.appendChild(time);
+    downloadIcon.addEventListener('click',()=>{
+      let a = document.querySelector('a');
+      a.href =fileDetails.Message;
+      a.click();
+    })
+  }
+
+    MessageList.appendChild(p);
+
+    document.querySelector('#chattingTerminal').scrollTo(0, document.querySelector('#chattingTerminal').scrollHeight || document.documentElement.scrollHeight);
+
+    // document.querySelector('#chattingTerminal').scrollTop = document.querySelector('#chattingTerminal').scrollHeight
+  }
+

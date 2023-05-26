@@ -31,7 +31,6 @@
 
 
 @media screen and (max-width: 480px) {
-
   #mainnav{
     border:2px solid;
     background-color: rgb(23, 207, 240);
@@ -251,11 +250,219 @@
   }
 
   #backtogroups{
-    margin-top: -10px;
+    margin-top: -6px;
+    margin-left: -110px;
     float: left;
     font-size: small;
     height: 28px;
     } 
+    #groupinfobtn{
+      float: left;
+      margin-left:60px;
+      margin-top: -6px;
+      display: none;
+      font-size: small;
+      height: 28px;
+    }
+    #groupinfopage{
+      border: 2px solid;
+      position:absolute;
+      z-index: 1;
+      margin-top: 36%;
+      margin-left: 10%;
+      height: 350px;
+      width: 300px;
+      background-color:rgb(219, 214, 208);
+      border-radius: 8px;
+      overflow: auto;
+      display: none;
+    }
+    
+    #infopageclose{
+      position: fixed;
+      margin-top: 3px;
+      margin-left: 275px;
+      border-radius: 20px;
+      font-size:medium;
+      background-color: red;
+    }
+    
+    #addmembersbtn{
+      position:fixed;
+      margin-top: 37px;
+      font-size: small;
+      margin-left: 170px;
+      height: 30px;
+    }
+    
+    #addmembersbutton{
+        width: 100%;
+    }
+    #addmemberspage{
+      position: fixed;
+      z-index: 1;
+      margin-top: 58%;
+      margin-left: 20%;
+      display: none;
+    }
+    
+    #groupinfopage h3 {
+      position: fixed;
+      background-color: rgb(71, 17, 107);
+      color: white;
+      width: 298px;
+      height: 70px;
+      text-align: center;
+      border-radius: 8px;
+    }
+    
+    #memberslist{
+    margin-top: 80px;
+    margin-left: 10px;
+    }
+    #member{
+        font-size: medium
+      }
+    #markasadminbtn{
+      font-size: x-small;
+      width: 100px;
+    }
+    #removeuser{
+      font-size: x-small;
+    }
+
+    #deletegroupbtn{
+      float: right;
+      margin-top: -7px;
+      margin-right: 10px;
+      display: none;
+      font-size: small;
+      height: 30px;
+      /* width: 60px; */
+    }
+    
+    #newGroupform{
+      border: 2px solid;
+      width: 258px;
+      height: 200px;
+      position: fixed;
+      z-index: 1;
+      border-radius: 15px;
+      left: 50%;
+      top: 22%;
+      transform: translate(-50%);
+      background-color: rgb(236, 233, 230);
+      visibility:hidden;
+    }
+    
+    #newGroupform h2{
+      text-align: center;
+      margin-top: 5px;
+    }
+    
+    #closeform{
+      float:right;
+      /* margin-right: 1px; */
+      margin-top: -45px;
+      font-size: small;
+      border-radius: 50px;
+      background-color: crimson;
+    }
+    
+    #groupnameinput{
+      border-radius: 10px;
+      margin-left: 11%;
+      margin-top: 5px;
+    }
+    #labelfor{
+      text-align: center;
+    }
+    #newGroupform select{
+      float: right;
+    }
+    #creategroupbtn{
+      margin-left: 28%;
+      margin-top: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color:yellowgreen;
+    }
+    #pleasewait{
+      text-align: center;
+      border: 2px solid;
+      position:absolute;
+      z-index: 1;
+      right: 0;
+      bottom: 0;
+      border-radius: 1rem;
+      width: 45%;
+      background-color: rgb(21, 27, 56);
+      color:rgb(253, 253, 253);
+      border-color:rgb(255, 255, 255);
+      margin-bottom: 167px;
+      margin-right: 110px;
+      font-size:20px;
+      display: none;
+    }
+    #imageTag{
+     border: 10px solid rgb(8, 8, 8);
+     border-radius: 1rem;
+     margin-top:10px;
+     width: 220px;
+     height: 250px;
+    }
+    #imagedownloadBtn{
+      margin-top: 10px;
+    }
+    #downloadIcon{
+      color: #000;
+      font-size: 30px;
+      cursor:pointer;
+    }
+    #filename{
+      margin-left: 10px;
+      margin-right: 15px;
+      font-size: 18px;
+    }
+    #Icon{
+      color: #000;
+      font-size: 30px;
+      margin-left: 15px;
+    }
+    #sendfileform{
+      border-radius: 10px;
+      border: 2px solid;
+      margin-right: 50px;
+      z-index: 1;
+      margin-bottom: 80px;
+      background-color: antiquewhite;
+      height: 76px;
+      position:absolute;
+      bottom: 0;
+      right: 0;
+      width: 74%;
+    }
+    #sendfilebtn{
+      margin-top: 3px;
+      float: right;
+      margin-right: 7px;
+      font-size: x-small;
+      width: 260px;
+    }
+    #fileinput{
+      margin-left: 5px;
+      margin-top: 10px;
+      font-size:small;
+    }
+    #clip{
+      color: black;
+      font-size: large;
+      position: fixed;
+      margin-left: 195px;
+      margin-bottom: 28px;
+      bottom: 0;
+      cursor: pointer;
+  }
   }
   
   @media screen and (min-width: 490px) {
@@ -265,7 +472,78 @@
       margin-top: 25%;
       margin-right: 35px;
     }
-    
+    #pleasewait{
+      text-align: center;
+      border: 2px solid;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      border-radius: 1rem;
+      width: 18%;
+      background-color: rgb(21, 27, 56);
+      color:rgb(253, 253, 253);
+      border-color:rgb(255, 255, 255);
+      margin-bottom: 140px;
+      margin-right: 390px;
+      font-size:x-large;
+      display: none;
+    }
+    #imageTag{
+     border: 10px solid rgb(8, 8, 8);
+     border-radius: 1rem;
+     margin-top:10px;
+    }
+    #imagedownloadBtn{
+      margin-top: 10px;
+    }
+    #downloadIcon{
+      color: #000;
+      font-size: 48px;
+      cursor:pointer;
+    }
+    #filename{
+      margin-left: 10px;
+      margin-right: 15px;
+      font-size: large;
+    }
+    #Icon{
+      color: #000;
+      font-size: 48px;
+      margin-left: 15px;
+    }
+    #clip{
+      color: black;
+      font-size: large;
+      position: fixed;
+      margin-left: -35px;
+      margin-top: 25px;
+      cursor: pointer;
+  }
+    #sendfileform{
+      border-radius: 10px;
+      border: 2px solid;
+      margin-right: 265px;
+      margin-left: 500px;
+      z-index: 1;
+      margin-bottom: 80px;
+      background-color: antiquewhite;
+      height: 50px;
+      position:absolute;
+      bottom: 0;
+      right: 0;
+      width: 35%;
+    }
+    #sendfilebtn{
+      margin-top: 7px;
+      float: right;
+      margin-right: 8px;
+      font-size: small;
+    }
+    #fileinput{
+      margin-left: 5px;
+      margin-top: 10px;
+      font-size:small;
+    }
   #nomessages{
     text-align: center;
   }
@@ -333,6 +611,7 @@
    margin-left: -30px;
    margin-right: 20px;
    background-color: rgb(235, 231, 227);
+   width: auto;
  }
  
  #nomessages{
@@ -352,7 +631,7 @@
   margin-top: 6%;
   margin-left: 35%;
   height: 350px;
-  width: 360px;
+  width: 410px;
   background-color:rgb(219, 214, 208);
   border-radius: 8px;
   overflow: auto;
@@ -362,7 +641,7 @@
 #infopageclose{
   position: fixed;
   margin-top: 3px;
-  margin-left: 320px;
+  margin-left: 360px;
   border-radius: 20px;
   background-color: red;
 }
@@ -371,19 +650,20 @@
   position:fixed;
   margin-top: 37px;
   font-size: small;
-  margin-left: 210px;
+  margin-left: 250px;
   height: 30px;
 }
 
 #addmembersbutton{
     width: 100%;
+    background-color:darkslategray
 }
 
 #addmemberspage{
   position: fixed;
   z-index: 1;
   margin-top: 12%;
-  margin-left: 40%;
+  margin-left: 42%;
   display: none;
 }
 
@@ -391,7 +671,7 @@
   position: fixed;
   background-color: rgb(71, 17, 107);
   color: white;
-  width: 357px;
+  width: 407px;
   height: 70px;
   text-align: center;
   border-radius: 8px;

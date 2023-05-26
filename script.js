@@ -117,3 +117,44 @@ if(page==="Login")  {
   }
 
 } 
+
+if(page==='Forgot Password'){
+    let form = document.querySelector('#forgotform');
+    let notfound = document.querySelector('#usernotfound');
+
+    form.onsubmit = sendresetMail;
+
+   async function sendresetMail(e){
+    try{
+        e.preventDefault();
+        notfound.style.display='none';
+        let Emailinput = document.querySelector('#forgotemail').value;
+ 
+        let Email = {
+         Email : Emailinput
+        } 
+        let response = await ResetApi(Email);
+        if(response==='user not found'){
+            notfound.style.display='block';
+        }
+        else{
+           alert(response);
+        }
+    }
+    catch(err){
+        console.log(err);
+    }
+    }
+
+    async function ResetApi(Email){
+        try{
+            let response = await axios.post('http://localhost:8000/password/forgotpassword',Email);
+            console.log(response);
+            return response.data.message;
+        }
+        catch(err){
+            console.log(err);
+            return err.response.data.message;
+        }
+    }
+}
